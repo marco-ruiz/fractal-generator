@@ -16,13 +16,6 @@
 
 package org.bop.fractals.line.swing;
 
-import java.awt.Color;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.bop.fractals.line.FractalLine;
-import org.bop.fractals.line.FractalPoint;
-
 /**
  * @author Marco Ruiz
  * @since Feb 21, 2017
