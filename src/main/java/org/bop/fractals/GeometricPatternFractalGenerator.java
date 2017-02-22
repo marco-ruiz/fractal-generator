@@ -24,7 +24,7 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import org.bop.fractals.progress.FixedIncrementProgressUpdater;
+import org.bop.fractals.progress.ThresholdProgressUpdater;
 
 /**
  * @author Marco Ruiz
@@ -37,13 +37,13 @@ public class GeometricPatternFractalGenerator<GEOMETRY_T extends GeometricPatter
 	protected int numIter;
 	protected boolean lastIterOnly;
 
-	private FixedIncrementProgressUpdater syncProgressUpdater;
+	private ThresholdProgressUpdater syncProgressUpdater;
 
 	public GeometricPatternFractalGenerator(GEOMETRY_T base, List<GEOMETRY_T> patterns, int numIter, boolean outputLastIterOnly, Consumer<Float> progressWriter) {
 		this.patterns = patterns;
 		this.numIter = numIter;
 		this.lastIterOnly = outputLastIterOnly;
-		this.syncProgressUpdater = new FixedIncrementProgressUpdater(progressWriter, computeNumGeometriesToCompute(), 2);
+		this.syncProgressUpdater = new ThresholdProgressUpdater(progressWriter, computeNumGeometriesToCompute(), 2);
 
 		this.patterns.stream().forEach(patternUnit -> patternUnit.computeConstants(base));
 		setProgressUpdater(syncProgressUpdater);
