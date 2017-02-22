@@ -39,10 +39,10 @@ public class GeometricPatternFractalGenerator<GEOMETRY_T extends GeometricPatter
 
 	private ThresholdProgressUpdater syncProgressUpdater;
 
-	public GeometricPatternFractalGenerator(GEOMETRY_T base, List<GEOMETRY_T> patterns, int numIter, boolean outputLastIterOnly, Consumer<Float> progressWriter) {
+	public GeometricPatternFractalGenerator(GEOMETRY_T base, List<GEOMETRY_T> patterns, int numIter, boolean lastIterOnly, Consumer<Float> progressWriter) {
 		this.patterns = patterns;
 		this.numIter = numIter;
-		this.lastIterOnly = outputLastIterOnly;
+		this.lastIterOnly = lastIterOnly;
 		this.syncProgressUpdater = new ThresholdProgressUpdater(progressWriter, computeNumGeometriesToCompute(), 2);
 
 		this.patterns.stream().forEach(patternUnit -> patternUnit.computeConstants(base));
