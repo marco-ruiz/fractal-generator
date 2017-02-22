@@ -24,23 +24,23 @@ import java.util.function.Consumer;
  * @author Marco Ruiz
  * @since Feb 21, 2017
  */
-public abstract class GeometricFractalBuilder<GEOMETRY_T> implements IFractalBuilder {
+public abstract class GeometricFractalGenerator<GEOMETRY_T> implements IFractalGenerator {
 
 	private ProgressUpdateWorker progressUpdateWorker;
-	protected List<GEOMETRY_T> output = new ArrayList<>();
+	protected List<GEOMETRY_T> computedGeometries = new ArrayList<>();
 
 	protected boolean interrupted = false;
 	protected boolean computing = false;
 	private long totalNumGeometries;
 
-	public GeometricFractalBuilder(Consumer<Double> progressUpdater) {
+	public GeometricFractalGenerator(Consumer<Double> progressUpdater) {
 		progressUpdateWorker = new ProgressUpdateWorker(this, progressUpdater);
 	}
 
 	public void run() {
 		computing = true;
 		totalNumGeometries = computeNumGeometriesToCompute();
-		output = new ArrayList<>();
+		computedGeometries = new ArrayList<>();
 		new Thread(progressUpdateWorker).start();
 		buildFractal();
 		progressUpdateWorker.stop();
@@ -57,19 +57,19 @@ public abstract class GeometricFractalBuilder<GEOMETRY_T> implements IFractalBui
 	}
 
 	public void reset() {
-		output.clear();
+		computedGeometries.clear();
 	}
 
 	public void stop() {
 		interrupted = true;
 	}
 
-	public List<GEOMETRY_T> getOutput() {
-		return output;
+	public List<GEOMETRY_T> getFractal() {
+		return computedGeometries;
 	}
 
 	public double getPercentageProgress() {
-		return 100 * output.size() / totalNumGeometries;
+		return 100 * computedGeometries.size() / totalNumGeometries;
 	}
 
 	public long getTotalNumGeometries() {

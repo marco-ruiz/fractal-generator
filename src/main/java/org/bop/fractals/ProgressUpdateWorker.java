@@ -26,11 +26,11 @@ public class ProgressUpdateWorker implements Runnable {
 
 	public static double FINISHED_PROGRESS = 100;
 
-	private IFractalBuilder fractalBuilder;
+	private IFractalGenerator fractalBuilder;
 	private Consumer<Double> progressUpdater;
 	private boolean interrupted;
 
-	public ProgressUpdateWorker(IFractalBuilder fractalBuilder, Consumer<Double> progressUpdater) {
+	public ProgressUpdateWorker(IFractalGenerator fractalBuilder, Consumer<Double> progressUpdater) {
 		this.fractalBuilder = fractalBuilder;
 		this.progressUpdater = progressUpdater;
 	}

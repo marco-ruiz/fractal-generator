@@ -20,7 +20,7 @@ package org.bop.fractals;
  * @author Marco Ruiz
  * @since Feb 21, 2017
  */
-public interface IFractalBuilder extends Runnable {
+public interface IFractalGenerator extends Runnable {
 
 	public double getPercentageProgress();
 }

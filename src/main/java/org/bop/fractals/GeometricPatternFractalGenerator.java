@@ -28,13 +28,14 @@ import java.util.stream.IntStream;
  * @author Marco Ruiz
  * @since Feb 21, 2017
  */
-public class GeometricPatternFractalBuilder<GEOMETRY_T extends GeometricPattern<GEOMETRY_T>> extends GeometricFractalBuilder<GEOMETRY_T> {
+public class GeometricPatternFractalGenerator<GEOMETRY_T extends GeometricPattern<GEOMETRY_T>> extends GeometricFractalGenerator<GEOMETRY_T> {
 
+	private Map<Integer, List<GEOMETRY_T>> iterOuts = new HashMap<>();
 	protected List<GEOMETRY_T> patterns;
 	protected int numIter;
 	protected boolean lastIterOnly;
 
-	public GeometricPatternFractalBuilder(GEOMETRY_T base, List<GEOMETRY_T> patterns, int numIter, boolean outputLastIterOnly, Consumer<Double> progressRepainter) {
+	public GeometricPatternFractalGenerator(GEOMETRY_T base, List<GEOMETRY_T> patterns, int numIter, boolean outputLastIterOnly, Consumer<Double> progressRepainter) {
 		super(progressRepainter);
 		this.patterns = patterns;
 		this.numIter = numIter;
@@ -48,36 +49,11 @@ public class GeometricPatternFractalBuilder<GEOMETRY_T extends GeometricPattern<
 		return (long) ((numPatterns * (Math.pow(numPatterns, numIter) - 1) / (numPatterns - 1)) - numPatterns);
 	}
 
-/*
-	public void buildFractal2() {
-		patterns.stream().forEach(pattern -> buildFractal(pattern, numIter));
-	}
-
-	// Recursive method to create fractal based on base FractalLine, "lines" vector "num_lines" value (size of "lines") and number of iterations
-	public int buildFractal(GEOMETRY_T relBase, int numIter) {
-		GEOMETRY_T equivalentGeometry;
-
-		if (numIter == 1 || interrupted) return 0;
-
-		for (int idx = 0; idx < patterns.size(); idx++) {
-			equivalentGeometry = relBase.computeGeometryEquivalentTo(patterns.get(idx));
-
-			if (!lastIterOnly || numIter == 2)
-				output.add(equivalentGeometry);
-
-			if (buildFractal(equivalentGeometry, numIter - 1) == 1) return 1;
-		}
-		return 0;
-	}
-*/
-
-	private Map<Integer, List<GEOMETRY_T>> iterOuts = new HashMap<>();
-
 	public void buildFractal() {
 		iterOuts.computeIfAbsent(0, ArrayList::new).addAll(patterns);
 		IntStream.range(1, numIter).forEach(this::computeIter);
 
-		output = (lastIterOnly) ?
+		computedGeometries = (lastIterOnly) ?
 			iterOuts.get(numIter - 1) :
 			iterOuts.values().stream()
 					.flatMap(List::stream)
