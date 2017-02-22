@@ -161,9 +161,9 @@ public class FractalPanel extends JPanel implements PatternEditor {
 	}
 
 	// Interface with users to create fractal
-	public void computeFractal(int numIter, boolean onlyLastIter, Consumer<Double> progressUpdater) {
+	public void computeFractal(int numIter, boolean onlyLastIter, Consumer<Float> progressWriter) {
 		this.onlyLastIter = onlyLastIter;
-		fractalGenerator = new GeometricPatternFractalGenerator<FractalLine>(base, patterns, numIter, onlyLastIter, progressUpdater);
+		fractalGenerator = new GeometricPatternFractalGenerator<FractalLine>(base, patterns, numIter, onlyLastIter, progressWriter);
 		new Thread(fractalGenerator).start();
 	}
 }

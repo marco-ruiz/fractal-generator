@@ -28,5 +28,5 @@ public interface PatternEditor {
 	public void clear();
 	public void showPattern();
 	public void showFractal();
-	public void computeFractal(int numIter, boolean onlyLastIter, Consumer<Double> progressUpdater);
+	public void computeFractal(int numIter, boolean onlyLastIter, Consumer<Float> progressUpdater);
 }

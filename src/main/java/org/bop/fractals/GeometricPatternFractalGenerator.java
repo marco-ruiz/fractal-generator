@@ -24,6 +24,8 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import org.bop.fractals.progress.FixedIncrementProgressUpdater;
+
 /**
  * @author Marco Ruiz
  * @since Feb 21, 2017
@@ -35,13 +37,16 @@ public class GeometricPatternFractalGenerator<GEOMETRY_T extends GeometricPatter
 	protected int numIter;
 	protected boolean lastIterOnly;
 
-	public GeometricPatternFractalGenerator(GEOMETRY_T base, List<GEOMETRY_T> patterns, int numIter, boolean outputLastIterOnly, Consumer<Double> progressRepainter) {
-		super(progressRepainter);
+	private FixedIncrementProgressUpdater syncProgressUpdater;
+
+	public GeometricPatternFractalGenerator(GEOMETRY_T base, List<GEOMETRY_T> patterns, int numIter, boolean outputLastIterOnly, Consumer<Float> progressWriter) {
 		this.patterns = patterns;
 		this.numIter = numIter;
 		this.lastIterOnly = outputLastIterOnly;
+		this.syncProgressUpdater = new FixedIncrementProgressUpdater(progressWriter, computeNumGeometriesToCompute(), 2);
 
 		this.patterns.stream().forEach(patternUnit -> patternUnit.computeConstants(base));
+		setProgressUpdater(syncProgressUpdater);
 	}
 
 	public long computeNumGeometriesToCompute() {
@@ -74,8 +79,8 @@ public class GeometricPatternFractalGenerator<GEOMETRY_T extends GeometricPatter
 		return prevIterOuts.stream()
 			.filter(relBase -> !interrupted)
 			.map(relBase -> relBase.computeGeometryEquivalentTo(pattern))
+			.peek(equiv -> syncProgressUpdater.incrementGenerated())
 			.collect(Collectors.toList());
 	}
 }
-
 

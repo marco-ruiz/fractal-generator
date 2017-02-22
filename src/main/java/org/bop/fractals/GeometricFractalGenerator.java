@@ -20,33 +20,47 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
+import org.bop.fractals.progress.IProgressUpdater;
+import org.bop.fractals.progress.PollingProgressUpdater;
+
 /**
  * @author Marco Ruiz
  * @since Feb 21, 2017
  */
-public abstract class GeometricFractalGenerator<GEOMETRY_T> implements IFractalGenerator {
+public abstract class GeometricFractalGenerator<GEOMETRY_T> implements Runnable {
 
-	private ProgressUpdateWorker progressUpdateWorker;
+	private IProgressUpdater progressUpdater;
 	protected List<GEOMETRY_T> computedGeometries = new ArrayList<>();
 
 	protected boolean interrupted = false;
 	protected boolean computing = false;
 	private long totalNumGeometries;
 
-	public GeometricFractalGenerator(Consumer<Double> progressUpdater) {
-		progressUpdateWorker = new ProgressUpdateWorker(this, progressUpdater);
+	public GeometricFractalGenerator() {
+		this((IProgressUpdater)null);
+	}
+
+	public GeometricFractalGenerator(Consumer<Float> progressWriter) {
+		setProgressUpdater(new PollingProgressUpdater(() -> getPercentageProgress(), progressWriter));
+	}
+
+	public GeometricFractalGenerator(IProgressUpdater progressUpdater) {
+		setProgressUpdater(progressUpdater);
+	}
+
+	public void setProgressUpdater(IProgressUpdater progressUpdater) {
+		this.progressUpdater = progressUpdater;
 	}
 
 	public void run() {
 		computing = true;
 		totalNumGeometries = computeNumGeometriesToCompute();
 		computedGeometries = new ArrayList<>();
-		new Thread(progressUpdateWorker).start();
+		progressUpdater.start();
 		buildFractal();
-		progressUpdateWorker.stop();
 		computing = false;
 
-		progressUpdateWorker.updateProgress(100);
+		progressUpdater.updateComplete();
 	}
 
 	public abstract void buildFractal();
@@ -68,7 +82,7 @@ public abstract class GeometricFractalGenerator<GEOMETRY_T> implements IFractalG
 		return computedGeometries;
 	}
 
-	public double getPercentageProgress() {
+	public float getPercentageProgress() {
 		return 100 * computedGeometries.size() / totalNumGeometries;
 	}
 

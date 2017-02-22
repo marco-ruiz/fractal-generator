@@ -6,7 +6,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JTextField;
 
-import org.bop.fractals.ProgressUpdateWorker;
+import org.bop.fractals.progress.PollingProgressUpdater;
 
 public class FractalApp extends BaseSwingApp {
 
@@ -47,10 +47,9 @@ public class FractalApp extends BaseSwingApp {
 	}
 
 	private void updateProgress(double progress) {
-		System.out.println(progress);
 		txtGenerated.setBackground(Color.yellow);
 		txtGenerated.setText("" + progress);
-		if (progress == ProgressUpdateWorker.FINISHED_PROGRESS) {
+		if (progress == PollingProgressUpdater.FINISHED_PROGRESS) {
 			// Fractal finished!
 			txtGenerated.setBackground(Color.white);
 		}
