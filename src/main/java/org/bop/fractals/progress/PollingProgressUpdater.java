@@ -14,48 +14,47 @@
  * limitations under the License.
  */
 
-package org.bop.fractals;
+package org.bop.fractals.progress;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 /**
  * @author Marco Ruiz
  * @since Feb 21, 2017
  */
-public class ProgressUpdateWorker implements Runnable {
+public class PollingProgressUpdater extends BaseProgressUpdater {
 
-	public static double FINISHED_PROGRESS = 100;
+	private static ExecutorService progressUpdaterService = Executors.newFixedThreadPool(1);
 
-	private IFractalGenerator fractalBuilder;
-	private Consumer<Double> progressUpdater;
+	protected Supplier<Float> progressReader;
 	private boolean interrupted;
 
-	public ProgressUpdateWorker(IFractalGenerator fractalBuilder, Consumer<Double> progressUpdater) {
-		this.fractalBuilder = fractalBuilder;
-		this.progressUpdater = progressUpdater;
+	public PollingProgressUpdater(Supplier<Float> progressReader, Consumer<Float> progressWriter) {
+		super(progressWriter);
+		this.progressReader = progressReader;
+	}
+
+	public void start() {
+		progressUpdaterService.submit(() -> run());
+	}
+
+	public void stop() {
+		interrupted = true;
 	}
 
 	public void run() {
+		if (progressWriter == null) return;
 		interrupted = false;
 		while (true) {
-			updateProgress();
+			updateProgress(progressReader.get());
 			try {
 				Thread.currentThread().sleep(100);
 			} catch (InterruptedException e) {}
 			if (interrupted) return;
 		}
-	}
-
-	public void updateProgress() {
-		updateProgress(fractalBuilder.getPercentageProgress());
-	}
-
-	public void updateProgress(double percentageProgress) {
-		progressUpdater.accept(percentageProgress);
-	}
-
-	public void stop() {
-		interrupted = true;
 	}
 }
 
