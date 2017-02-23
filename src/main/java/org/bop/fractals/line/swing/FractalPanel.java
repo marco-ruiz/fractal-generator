@@ -81,14 +81,14 @@ public class FractalPanel extends JPanel implements PatternEditor {
 			if (mode == FractalPanel.MODE_PATTERN) {
 				// Definition of the first point of a FractalLine
 				if (choosingStartLine) {
-					editA = event.getLocationOnScreen();
+					editA = event.getPoint();
 					choosingStartLine = false;
 					return;
 				}
 
 				// Definition of the second point of a FractalLine
 				if (!choosingStartLine) {
-					editB = event.getLocationOnScreen();
+					editB = event.getPoint();
 					FractalLine temp = new FractalLine(editA.x, editA.y, editB.x, editB.y, color);
 					if (definingBase) {
 						base = temp;
@@ -106,7 +106,7 @@ public class FractalPanel extends JPanel implements PatternEditor {
 	class SymMouseMotion extends MouseMotionAdapter {
 		public void mouseMoved(MouseEvent event) {
 			if (choosingStartLine) return;
-			editB = event.getLocationOnScreen();
+			editB = event.getPoint();
 			repaint();
 		}
 	}
