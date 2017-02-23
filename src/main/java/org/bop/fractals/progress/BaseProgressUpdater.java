@@ -35,6 +35,7 @@ public class BaseProgressUpdater implements IProgressUpdater {
 	}
 
 	public void updateProgress(float percentageProgress) {
-		progressUpdaterService.submit(() -> progressWriter.accept(percentageProgress));
+		if (progressWriter != null)
+			progressUpdaterService.submit(() -> progressWriter.accept(percentageProgress));
 	}
 }
