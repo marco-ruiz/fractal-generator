@@ -4,7 +4,7 @@ This project consists of:
 - An abstract framework (which expects concrete transformations implementations) to compute fractals from a user specified geometric pattern. 
 - An implementation of shape transformations for the simplest of all shapes: lines!
 - An abstract framework to update progress of an abstract task (i.e. fractal generator) using abstract workers.
-- Two implementations of the update progress workers: polling (asynchronous) and sensitive (synchronous).
+- Two implementations of the update progress workers: polling (asynchronous) and threshold reached (synchronous).
 - A Java Swing client application to provide a user interface to all this.
 
 ### Usage & Design
