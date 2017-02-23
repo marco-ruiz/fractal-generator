@@ -20,10 +20,10 @@ package org.bop.fractals;
  * @author Marco Ruiz
  * @since Feb 21, 2017
  */
-public interface GeometricPattern<GEOMETRIC_T> {
+public interface Shape<SHAPE_T> {
 
-	public void computeConstants(GEOMETRIC_T base);
+	public void computeConstants(SHAPE_T base);
 
-	public GEOMETRIC_T computeGeometryEquivalentTo(GEOMETRIC_T relativeBase);
+	public SHAPE_T computeGeometryEquivalentTo(SHAPE_T relativeBase);
 
 }

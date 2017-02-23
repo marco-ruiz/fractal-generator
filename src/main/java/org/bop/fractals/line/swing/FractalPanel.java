@@ -18,6 +18,7 @@ package org.bop.fractals.line.swing;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
@@ -31,7 +32,6 @@ import javax.swing.SwingUtilities;
 import org.bop.fractals.GeometricPatternFractalGenerator;
 import org.bop.fractals.PatternEditor;
 import org.bop.fractals.line.FractalLine;
-import org.bop.fractals.line.FractalPoint;
 
 /**
  * @author Marco Ruiz
@@ -51,8 +51,7 @@ public class FractalPanel extends JPanel implements PatternEditor {
 	private List<FractalLine> patterns = new ArrayList<FractalLine>();
 
 	// Temporary points for one cycle of defining a FractalLine
-	private FractalPoint editA = new FractalPoint(0, 0);
-	private FractalPoint editB = new FractalPoint(0, 0);
+	private Point editA, editB;
 
 	// Temporary variables declare here to accelerate fractal process creation
 	private boolean definingBase = true;
@@ -82,15 +81,15 @@ public class FractalPanel extends JPanel implements PatternEditor {
 			if (mode == FractalPanel.MODE_PATTERN) {
 				// Definition of the first point of a FractalLine
 				if (choosingStartLine) {
-					editA = createFractalPoint(event);
+					editA = event.getLocationOnScreen();
 					choosingStartLine = false;
 					return;
 				}
 
 				// Definition of the second point of a FractalLine
 				if (!choosingStartLine) {
-					editB = createFractalPoint(event);
-					FractalLine temp = new FractalLine(editA, editB, color);
+					editB = event.getLocationOnScreen();
+					FractalLine temp = new FractalLine(editA.x, editA.y, editB.x, editB.y, color);
 					if (definingBase) {
 						base = temp;
 						definingBase = false;
@@ -107,13 +106,9 @@ public class FractalPanel extends JPanel implements PatternEditor {
 	class SymMouseMotion extends MouseMotionAdapter {
 		public void mouseMoved(MouseEvent event) {
 			if (choosingStartLine) return;
-			editB = createFractalPoint(event);
+			editB = event.getLocationOnScreen();
 			repaint();
 		}
-	}
-
-	private FractalPoint createFractalPoint(MouseEvent event) {
-		return new FractalPoint(event.getX(), event.getY());
 	}
 
 	public void setCurrentColor(Color c) {
@@ -131,19 +126,19 @@ public class FractalPanel extends JPanel implements PatternEditor {
 		}
 
 		if (!choosingStartLine && mode == FractalPanel.MODE_PATTERN)
-			drawLine(g, editA, editB, color);
+			drawLine(g, editA.x, editA.y, editB.x, editB.y, color);
 
 		if (mode == FractalPanel.MODE_FRACTAL)
 			fractalGenerator.getFractal().parallelStream().forEach(line -> drawLine(g, line));
 	}
 
 	private void drawLine(Graphics g, FractalLine line) {
-		drawLine(g, line.A, line.B, line.color);
+		drawLine(g, (int)line.Ax, (int)line.Ay, (int)line.Bx, (int)line.By, line.color);
 	}
 
-	private void drawLine(Graphics g, FractalPoint start, FractalPoint end, Color color) {
+	private void drawLine(Graphics g, int Ax, int Ay, int Bx, int By, Color color) {
 		g.setColor(color);
-		g.drawLine((int) start.x, (int) start.y, (int) end.x, (int) end.y);
+		g.drawLine(Ax, Ay, Bx, By);
 	}
 
 	// Interface with users to set definingBase state
@@ -184,7 +179,8 @@ public class FractalPanel extends JPanel implements PatternEditor {
 	public void computeFractal(int numIter, boolean onlyLastIter, Consumer<Float> progressWriter) {
 		this.onlyLastIter = onlyLastIter;
 		fractalGenerator = new GeometricPatternFractalGenerator<FractalLine>(base, patterns, numIter, onlyLastIter, progressWriter);
-		new Thread(fractalGenerator).start();
+		fractalGenerator.generateFractal();
+
 	}
 }
 

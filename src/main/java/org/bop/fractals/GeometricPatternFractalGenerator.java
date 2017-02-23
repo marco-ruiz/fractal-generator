@@ -30,31 +30,31 @@ import org.bop.fractals.progress.ThresholdProgressUpdater;
  * @author Marco Ruiz
  * @since Feb 21, 2017
  */
-public class GeometricPatternFractalGenerator<GEOMETRY_T extends GeometricPattern<GEOMETRY_T>> extends GeometricFractalGenerator<GEOMETRY_T> {
+public class GeometricPatternFractalGenerator<SHAPE_T extends Shape<SHAPE_T>> extends GeometricFractalGenerator<SHAPE_T> {
 
-	private Map<Integer, List<GEOMETRY_T>> iterOuts = new HashMap<>();
-	protected List<GEOMETRY_T> patterns;
+	private Map<Integer, List<SHAPE_T>> iterOuts = new HashMap<>();
+	protected List<SHAPE_T> patterns;
 	protected int numIter;
 	protected boolean lastIterOnly;
 
 	private ThresholdProgressUpdater syncProgressUpdater;
 
-	public GeometricPatternFractalGenerator(GEOMETRY_T base, List<GEOMETRY_T> patterns, int numIter, boolean lastIterOnly, Consumer<Float> progressWriter) {
+	public GeometricPatternFractalGenerator(SHAPE_T base, List<SHAPE_T> patterns, int numIter, boolean lastIterOnly, Consumer<Float> progressWriter) {
 		this.patterns = patterns;
 		this.numIter = numIter;
 		this.lastIterOnly = lastIterOnly;
-		this.syncProgressUpdater = new ThresholdProgressUpdater(progressWriter, computeNumGeometriesToCompute(), 2);
+		this.syncProgressUpdater = new ThresholdProgressUpdater(progressWriter, calculateNumGeometriesToCompute(), 2);
 
 		this.patterns.stream().forEach(patternUnit -> patternUnit.computeConstants(base));
 		setProgressUpdater(syncProgressUpdater);
 	}
 
-	public long computeNumGeometriesToCompute() {
+	protected long calculateNumGeometriesToCompute() {
 		int numPatterns = patterns.size();
 		return (long) ((numPatterns * (Math.pow(numPatterns, numIter) - 1) / (numPatterns - 1)) - numPatterns);
 	}
 
-	public void buildFractal() {
+	protected void buildFractalShapes() {
 		iterOuts.computeIfAbsent(0, ArrayList::new).addAll(patterns);
 		IntStream.range(1, numIter).forEach(this::computeIter);
 
@@ -66,8 +66,8 @@ public class GeometricPatternFractalGenerator<GEOMETRY_T extends GeometricPatter
 	}
 
 	private void computeIter(int iterNum) {
-		List<GEOMETRY_T> prevIterOuts = iterOuts.get(iterNum - 1);
-		List<GEOMETRY_T> currIterOuts =
+		List<SHAPE_T> prevIterOuts = iterOuts.get(iterNum - 1);
+		List<SHAPE_T> currIterOuts =
 				patterns.parallelStream()
 					.map(pattern -> computeEquivalencesOf(prevIterOuts, pattern))
 					.flatMap(List::stream)
@@ -75,7 +75,7 @@ public class GeometricPatternFractalGenerator<GEOMETRY_T extends GeometricPatter
 		iterOuts.put(iterNum, currIterOuts);
 	}
 
-	private List<GEOMETRY_T> computeEquivalencesOf(List<GEOMETRY_T> prevIterOuts, GEOMETRY_T pattern) {
+	private List<SHAPE_T> computeEquivalencesOf(List<SHAPE_T> prevIterOuts, SHAPE_T pattern) {
 		return prevIterOuts.stream()
 			.filter(relBase -> !interrupted)
 			.map(relBase -> relBase.computeGeometryEquivalentTo(pattern))

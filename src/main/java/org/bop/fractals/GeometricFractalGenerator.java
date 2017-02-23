@@ -18,6 +18,9 @@ package org.bop.fractals;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
 import org.bop.fractals.progress.IProgressUpdater;
@@ -27,13 +30,15 @@ import org.bop.fractals.progress.PollingProgressUpdater;
  * @author Marco Ruiz
  * @since Feb 21, 2017
  */
-public abstract class GeometricFractalGenerator<GEOMETRY_T> implements Runnable {
+public abstract class GeometricFractalGenerator<SHAPE_T> implements Runnable {
+
+	private static ExecutorService generatorService = Executors.newFixedThreadPool(1);
 
 	private IProgressUpdater progressUpdater;
-	protected List<GEOMETRY_T> computedGeometries = new ArrayList<>();
+	protected List<SHAPE_T> computedGeometries = new ArrayList<>();
 
 	protected boolean interrupted = false;
-	protected boolean computing = false;
+	protected AtomicBoolean computing = new AtomicBoolean(false);
 	private long totalNumGeometries;
 
 	public GeometricFractalGenerator() {
@@ -52,23 +57,22 @@ public abstract class GeometricFractalGenerator<GEOMETRY_T> implements Runnable 
 		this.progressUpdater = progressUpdater;
 	}
 
-	public void run() {
-		computing = true;
-		totalNumGeometries = computeNumGeometriesToCompute();
+	public void generateFractal() {
+		if (!computing.get()) generatorService.submit(this);
+	}
+
+	public final void run() {
+		computing.set(true);
+		totalNumGeometries = calculateNumGeometriesToCompute();
 		computedGeometries = new ArrayList<>();
 		progressUpdater.start();
-		buildFractal();
-		computing = false;
-
+		buildFractalShapes();
 		progressUpdater.updateComplete();
+		computing.set(false);
 	}
 
-	public abstract void buildFractal();
-	public abstract long computeNumGeometriesToCompute();
-
-	public boolean isComputing() {
-		return computing;
-	}
+	protected abstract void buildFractalShapes();
+	protected abstract long calculateNumGeometriesToCompute();
 
 	public void reset() {
 		computedGeometries.clear();
@@ -78,7 +82,7 @@ public abstract class GeometricFractalGenerator<GEOMETRY_T> implements Runnable 
 		interrupted = true;
 	}
 
-	public List<GEOMETRY_T> getFractal() {
+	public List<SHAPE_T> getFractal() {
 		return computedGeometries;
 	}
 

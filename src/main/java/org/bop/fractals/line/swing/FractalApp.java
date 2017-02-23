@@ -17,6 +17,7 @@
 package org.bop.fractals.line.swing;
 
 import java.awt.Color;
+import java.util.function.Consumer;
 
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -52,7 +53,7 @@ public class FractalApp extends BaseSwingApp {
 		setSize(750, 750);
 
 		addButton("Calculate Fractal", 252, 12, 108, 33,
-				e -> pnlFractal.computeFractal(Integer.parseInt(txtIters.getText()), chkOnlyLast.isSelected(), prog -> updateProgress(prog)));
+				e -> pnlFractal.computeFractal(Integer.parseInt(txtIters.getText()), chkOnlyLast.isSelected(), this::updateProgress));
 		addButton("Define Base", 24, 12, 108, 33, event -> pnlFractal.startBaseDefinition());
 		addButton("Reset", 24, 60, 108, 33, event -> pnlFractal.clear());
 		addButton("Show Pattern", 144, 12, 96, 33, event -> pnlFractal.show(FractalPanel.MODE_PATTERN));
