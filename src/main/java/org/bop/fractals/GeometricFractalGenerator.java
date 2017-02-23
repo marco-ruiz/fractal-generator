@@ -35,7 +35,7 @@ public abstract class GeometricFractalGenerator<SHAPE_T> implements Runnable {
 	private static ExecutorService generatorService = Executors.newFixedThreadPool(1);
 
 	private IProgressUpdater progressUpdater;
-	protected List<SHAPE_T> computedGeometries = new ArrayList<>();
+	protected List<SHAPE_T> computedShapes = new ArrayList<>();
 
 	protected boolean interrupted = false;
 	protected AtomicBoolean computing = new AtomicBoolean(false);
@@ -64,7 +64,7 @@ public abstract class GeometricFractalGenerator<SHAPE_T> implements Runnable {
 	public final void run() {
 		computing.set(true);
 		totalNumGeometries = calculateNumGeometriesToCompute();
-		computedGeometries = new ArrayList<>();
+		computedShapes = new ArrayList<>();
 		progressUpdater.start();
 		buildFractalShapes();
 		progressUpdater.updateComplete();
@@ -75,7 +75,7 @@ public abstract class GeometricFractalGenerator<SHAPE_T> implements Runnable {
 	protected abstract long calculateNumGeometriesToCompute();
 
 	public void reset() {
-		computedGeometries.clear();
+		computedShapes.clear();
 	}
 
 	public void stop() {
@@ -83,11 +83,11 @@ public abstract class GeometricFractalGenerator<SHAPE_T> implements Runnable {
 	}
 
 	public List<SHAPE_T> getFractal() {
-		return computedGeometries;
+		return computedShapes;
 	}
 
 	public float getPercentageProgress() {
-		return 100 * computedGeometries.size() / totalNumGeometries;
+		return 100 * computedShapes.size() / totalNumGeometries;
 	}
 
 	public long getTotalNumGeometries() {

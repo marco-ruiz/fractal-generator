@@ -32,51 +32,89 @@ import org.bop.fractals.progress.ThresholdProgressUpdater;
  */
 public class GeometricPatternFractalGenerator<SHAPE_T extends Shape<SHAPE_T>> extends GeometricFractalGenerator<SHAPE_T> {
 
-	private Map<Integer, List<SHAPE_T>> iterOuts = new HashMap<>();
+	private SHAPE_T base;
 	protected List<SHAPE_T> patterns;
-	protected int numIter;
+	protected int numRecursions;
 	protected boolean lastIterOnly;
 
 	private ThresholdProgressUpdater syncProgressUpdater;
+	private Map<Integer, List<SHAPE_T>> shapesByRecursionLevel = new HashMap<>();
 
 	public GeometricPatternFractalGenerator(SHAPE_T base, List<SHAPE_T> patterns, int numIter, boolean lastIterOnly, Consumer<Float> progressWriter) {
-		this.patterns = patterns;
-		this.numIter = numIter;
-		this.lastIterOnly = lastIterOnly;
+		setBase(base);
+		setPatterns(patterns);
+		setNumRecursions(numIter);
+		setLastIterOnly(lastIterOnly);
 		this.syncProgressUpdater = new ThresholdProgressUpdater(progressWriter, calculateNumGeometriesToCompute(), 2);
 
 		this.patterns.stream().forEach(patternUnit -> patternUnit.computeConstants(base));
 		setProgressUpdater(syncProgressUpdater);
 	}
 
+	public SHAPE_T getBase() {
+		return base;
+	}
+
+	public void setBase(SHAPE_T base) {
+		this.base = base;
+	}
+
+	public List<SHAPE_T> getPatterns() {
+		return patterns;
+	}
+
+	public void setPatterns(List<SHAPE_T> patterns) {
+		this.patterns = patterns;
+	}
+
+	public void addPattern(SHAPE_T pattern) {
+		this.patterns.add(pattern);
+	}
+
+	public void setNumRecursions(int numIter) {
+		this.numRecursions = numIter;
+	}
+
+	public void setLastIterOnly(boolean lastIterOnly) {
+		this.lastIterOnly = lastIterOnly;
+	}
+
+	public void setProgressListener(Consumer<Float> progressListener) {
+		this.syncProgressUpdater = new ThresholdProgressUpdater(progressListener, calculateNumGeometriesToCompute(), 2);
+	}
+
 	protected long calculateNumGeometriesToCompute() {
 		int numPatterns = patterns.size();
-		return (long) ((numPatterns * (Math.pow(numPatterns, numIter) - 1) / (numPatterns - 1)) - numPatterns);
+		return (long) ((numPatterns * (Math.pow(numPatterns, numRecursions) - 1) / (numPatterns - 1)) - numPatterns);
+	}
+
+	public List<SHAPE_T> getFractal(int recursionLevel) {
+		return shapesByRecursionLevel.get(recursionLevel);
 	}
 
 	protected void buildFractalShapes() {
-		iterOuts.computeIfAbsent(0, ArrayList::new).addAll(patterns);
-		IntStream.range(1, numIter).forEach(this::computeIter);
+		shapesByRecursionLevel.computeIfAbsent(0, ArrayList::new).addAll(patterns);
+		IntStream.range(1, numRecursions).forEach(this::computeRecursionLevel);
 
-		computedGeometries = (lastIterOnly) ?
-			iterOuts.get(numIter - 1) :
-			iterOuts.values().stream()
+		computedShapes = (lastIterOnly) ?
+			shapesByRecursionLevel.get(numRecursions - 1) :
+			shapesByRecursionLevel.values().stream()
 					.flatMap(List::stream)
 					.collect(Collectors.toList());
 	}
 
-	private void computeIter(int iterNum) {
-		List<SHAPE_T> prevIterOuts = iterOuts.get(iterNum - 1);
-		List<SHAPE_T> currIterOuts =
+	private void computeRecursionLevel(int recursionLevel) {
+		List<SHAPE_T> prevRecShapes = shapesByRecursionLevel.get(recursionLevel - 1);
+		List<SHAPE_T> currRecShapes =
 				patterns.parallelStream()
-					.map(pattern -> computeEquivalencesOf(prevIterOuts, pattern))
+					.map(pattern -> computeEquivalencesOf(prevRecShapes, pattern))
 					.flatMap(List::stream)
 					.collect(Collectors.toList());
-		iterOuts.put(iterNum, currIterOuts);
+		shapesByRecursionLevel.put(recursionLevel, currRecShapes);
 	}
 
-	private List<SHAPE_T> computeEquivalencesOf(List<SHAPE_T> prevIterOuts, SHAPE_T pattern) {
-		return prevIterOuts.stream()
+	private List<SHAPE_T> computeEquivalencesOf(List<SHAPE_T> prevRecShapes, SHAPE_T pattern) {
+		return prevRecShapes.stream()
 			.filter(relBase -> !interrupted)
 			.map(relBase -> relBase.computeGeometryEquivalentTo(pattern))
 			.peek(equiv -> syncProgressUpdater.incrementGenerated())
