@@ -134,7 +134,7 @@ public class FractalPanel extends JPanel implements PatternEditor {
 			drawLine(g, editA, editB, color);
 
 		if (mode == FractalPanel.MODE_FRACTAL)
-			fractalGenerator.getFractal().stream().forEach(line -> drawLine(g, line));
+			fractalGenerator.getFractal().parallelStream().forEach(line -> drawLine(g, line));
 	}
 
 	private void drawLine(Graphics g, FractalLine line) {
