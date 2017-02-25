@@ -16,8 +16,6 @@
 
 package org.bop.fractals.line;
 
-import java.awt.Color;
-
 import org.bop.fractals.Shape;
 
 /**
@@ -37,20 +35,20 @@ public class FractalLine implements Shape<FractalLine> {
 	public final float Bx;
 	public final float By;
 
-	public final Color color;
+	public final int rgbColorValue;
 
 	private float k1, k2, k3, k4;
 
 	public FractalLine(float Ax, float Ay, float Bx, float By) {
-		this(Ax, Ay, Bx, By, Color.black);
+		this(Ax, Ay, Bx, By, 0);
 	}
 
-	public FractalLine(float Ax, float Ay, float Bx, float By, Color color) {
+	public FractalLine(float Ax, float Ay, float Bx, float By, int color) {
 		this.Ax = Ax;
 		this.Ay = Ay;
 		this.Bx = Bx;
 		this.By = By;
-		this.color = color;
+		this.rgbColorValue = color;
 	}
 
 	public void computeConstants(FractalLine baseLine) {
@@ -100,7 +98,7 @@ public class FractalLine implements Shape<FractalLine> {
 		float compBx = Ax + relativeBase.k3 * xDiff - relativeBase.k4 * yDiff;
 		float compBy = Ay + relativeBase.k3 * yDiff + relativeBase.k4 * xDiff;
 
-		return new FractalLine(compAx, compAy, compBx, compBy, relativeBase.color);
+		return new FractalLine(compAx, compAy, compBx, compBy, relativeBase.rgbColorValue);
 	}
 }
 

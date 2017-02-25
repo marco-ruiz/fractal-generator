@@ -17,7 +17,6 @@
 package org.bop.fractals.line.swing;
 
 import java.awt.Color;
-import java.util.function.Consumer;
 
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;

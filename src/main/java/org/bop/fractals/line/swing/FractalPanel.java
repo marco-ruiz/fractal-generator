@@ -64,6 +64,7 @@ public class FractalPanel extends JPanel implements PatternEditor {
 	// Constructor: define listeners for mouse operations
 	public FractalPanel() {
 		setBackground(Color.cyan);
+		setCurrentColor(Color.black);
 		setLayout(null);
 		addMouseListener(new SymMouse());
 		addMouseMotionListener(new SymMouseMotion());
@@ -89,7 +90,7 @@ public class FractalPanel extends JPanel implements PatternEditor {
 				// Definition of the second point of a FractalLine
 				if (!choosingStartLine) {
 					editB = event.getPoint();
-					FractalLine temp = new FractalLine(editA.x, editA.y, editB.x, editB.y, color);
+					FractalLine temp = new FractalLine(editA.x, editA.y, editB.x, editB.y, color.getRGB());
 					if (definingBase) {
 						base = temp;
 						definingBase = false;
@@ -133,7 +134,7 @@ public class FractalPanel extends JPanel implements PatternEditor {
 	}
 
 	private void drawLine(Graphics g, FractalLine line) {
-		drawLine(g, (int)line.Ax, (int)line.Ay, (int)line.Bx, (int)line.By, line.color);
+		drawLine(g, (int)line.Ax, (int)line.Ay, (int)line.Bx, (int)line.By, new Color(line.rgbColorValue));
 	}
 
 	private void drawLine(Graphics g, int Ax, int Ay, int Bx, int By, Color color) {
