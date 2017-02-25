@@ -18,24 +18,27 @@ package org.bop.fractals.progress;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.function.Consumer;
 
 /**
  * @author Marco Ruiz
  * @since Feb 22, 2017
  */
-public class BaseProgressUpdater implements IProgressUpdater {
+public class BaseProgressUpdater extends IProgressUpdater {
 
 	private static ExecutorService progressUpdaterService = Executors.newFixedThreadPool(1);
 
-	protected Consumer<Float> progressWriter;
+	protected IProgressListener progressWriter;
 
-	public BaseProgressUpdater(Consumer<Float> progressWriter) {
-		this.progressWriter = progressWriter;
+	public BaseProgressUpdater(IProgressListener progressListener) {
+		this.progressWriter = progressListener;
 	}
 
-	public void updateProgress(float percentageProgress) {
+	public void updateProgress(final float percentageProgress) {
 		if (progressWriter != null)
-			progressUpdaterService.submit(() -> progressWriter.accept(percentageProgress));
+			progressUpdaterService.submit(new Runnable() {
+				public void run() {
+					progressWriter.progressUpdate(percentageProgress);
+				}
+			});
 	}
 }

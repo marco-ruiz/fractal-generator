@@ -14,19 +14,13 @@
  * limitations under the License.
  */
 
-package org.bop.fractals;
-
-import java.util.function.Consumer;
+package org.bop.fractals.progress;
 
 /**
  * @author Marco Ruiz
- * @since Feb 21, 2017
+ * @since Feb 25, 2017
  */
-public interface PatternEditor {
+public interface IProgressInspector {
 
-	public void startBaseDefinition();
-	public void clear();
-	public void showPattern();
-	public void showFractal();
-	public void computeFractal(int numIter, boolean onlyLastIter, Consumer<Float> progressUpdater);
+	public float inspectCurrentProgress();
 }

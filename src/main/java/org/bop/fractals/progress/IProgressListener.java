@@ -18,20 +18,9 @@ package org.bop.fractals.progress;
 
 /**
  * @author Marco Ruiz
- * @since Feb 22, 2017
+ * @since Feb 25, 2017
  */
-public abstract class IProgressUpdater {
+public interface IProgressListener {
 
-	public static float FINISHED_PROGRESS = 100.0f;
-
-	public void start() {}
-
-	public void stop() {}
-
-	public void updateComplete() {
-		updateProgress(FINISHED_PROGRESS);
-		stop();
-	}
-
-	public abstract void updateProgress(float percentageProgress);
+	public void progressUpdate(float progressPercentage);
 }

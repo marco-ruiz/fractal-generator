@@ -21,8 +21,9 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.Consumer;
 
+import org.bop.fractals.progress.IProgressInspector;
+import org.bop.fractals.progress.IProgressListener;
 import org.bop.fractals.progress.IProgressUpdater;
 import org.bop.fractals.progress.PollingProgressUpdater;
 
@@ -35,7 +36,7 @@ public abstract class GeometricFractalGenerator<SHAPE_T> implements Runnable {
 	private static ExecutorService generatorService = Executors.newFixedThreadPool(1);
 
 	private IProgressUpdater progressUpdater;
-	protected List<SHAPE_T> computedShapes = new ArrayList<>();
+	protected List<SHAPE_T> computedShapes = new ArrayList<SHAPE_T>();
 
 	protected boolean interrupted = false;
 	protected AtomicBoolean computing = new AtomicBoolean(false);
@@ -45,8 +46,11 @@ public abstract class GeometricFractalGenerator<SHAPE_T> implements Runnable {
 		this((IProgressUpdater)null);
 	}
 
-	public GeometricFractalGenerator(Consumer<Float> progressWriter) {
-		setProgressUpdater(new PollingProgressUpdater(() -> getPercentageProgress(), progressWriter));
+	public GeometricFractalGenerator(IProgressListener progressListener) {
+		IProgressInspector progressInspector = new IProgressInspector() {
+			public float inspectCurrentProgress() { return getPercentageProgress(); }
+		};
+		setProgressUpdater(new PollingProgressUpdater(progressInspector, progressListener));
 	}
 
 	public GeometricFractalGenerator(IProgressUpdater progressUpdater) {
@@ -64,7 +68,7 @@ public abstract class GeometricFractalGenerator<SHAPE_T> implements Runnable {
 	public final void run() {
 		computing.set(true);
 		totalNumGeometries = calculateNumGeometriesToCompute();
-		computedShapes = new ArrayList<>();
+		computedShapes = new ArrayList<SHAPE_T>();
 		progressUpdater.start();
 		buildFractalShapes();
 		progressUpdater.updateComplete();

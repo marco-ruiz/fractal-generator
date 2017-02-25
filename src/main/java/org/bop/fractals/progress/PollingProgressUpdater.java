@@ -18,27 +18,25 @@ package org.bop.fractals.progress;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 /**
  * @author Marco Ruiz
  * @since Feb 21, 2017
  */
-public class PollingProgressUpdater extends BaseProgressUpdater {
+public class PollingProgressUpdater extends BaseProgressUpdater implements Runnable {
 
 	private static ExecutorService progressUpdaterService = Executors.newFixedThreadPool(1);
 
-	protected Supplier<Float> progressReader;
+	protected IProgressInspector progressReader;
 	private boolean interrupted;
 
-	public PollingProgressUpdater(Supplier<Float> progressReader, Consumer<Float> progressWriter) {
-		super(progressWriter);
-		this.progressReader = progressReader;
+	public PollingProgressUpdater(IProgressInspector progressInspector, IProgressListener progressListener) {
+		super(progressListener);
+		this.progressReader = progressInspector;
 	}
 
 	public void start() {
-		progressUpdaterService.submit(() -> run());
+		progressUpdaterService.submit(this);
 	}
 
 	public void stop() {
@@ -49,7 +47,7 @@ public class PollingProgressUpdater extends BaseProgressUpdater {
 		if (progressWriter == null) return;
 		interrupted = false;
 		while (true) {
-			updateProgress(progressReader.get());
+			updateProgress(progressReader.inspectCurrentProgress());
 			try {
 				Thread.currentThread().sleep(100);
 			} catch (InterruptedException e) {}

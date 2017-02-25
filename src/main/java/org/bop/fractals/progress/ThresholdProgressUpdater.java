@@ -17,7 +17,6 @@
 package org.bop.fractals.progress;
 
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.function.Consumer;
 
 /**
  * @author Marco Ruiz
@@ -31,8 +30,8 @@ public class ThresholdProgressUpdater extends BaseProgressUpdater {
 	private AtomicLong qtyGenerated = new AtomicLong(0);
 	private float nextTick = 0;
 
-	public ThresholdProgressUpdater(Consumer<Float> progressWriter, long toBeGenerated, float sensitivityInPercentage) {
-		super(progressWriter);
+	public ThresholdProgressUpdater(IProgressListener progressListener, long toBeGenerated, float sensitivityInPercentage) {
+		super(progressListener);
 		this.toBeGenerated = toBeGenerated;
 		this.generatedPerSensitivityUnit = toBeGenerated * sensitivityInPercentage / 100;
 	}
