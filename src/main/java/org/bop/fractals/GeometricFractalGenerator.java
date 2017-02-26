@@ -65,6 +65,10 @@ public abstract class GeometricFractalGenerator<SHAPE_T> implements Runnable {
 		if (!computing.get()) generatorService.submit(this);
 	}
 
+	public void generateFractalSync() {
+		if (!computing.get()) run();
+	}
+
 	public final void run() {
 		computing.set(true);
 		totalNumGeometries = calculateNumGeometriesToCompute();
