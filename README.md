@@ -19,9 +19,7 @@ The project contains the source code of two applications in different branches.
 
 ![](README/fractal-android.gif)
 
-The source code of the Java Swing client is on the `android` branch. Download or clone it and from within the
-project folder execute the command. `mvn compile`. This will create in the `target` folder the **APK** file that you need to upload to your
-android device. This file has the form `fractals-*.apk`. Once uploaded, install the **APK** and start using the application.
+Its source code is on the `android` branch. Download or clone it and from within the project folder execute the command `mvn compile`. This will create in the `target` folder the **APK** file that you need to upload to your android device. This file has the form `fractals-*.apk`. Once uploaded, proceed to install it and thereafter you can start using the application.
 
 The objective is to define lines that will form a pattern of lines for the application to recursively apply
 self-similarity to the rest of them. Draw lines on your screen (patterns) until you choose to generate the fractal
@@ -37,7 +35,7 @@ to crash if the fractal is too big.
 
 ![](README/fractal-swing.gif)
 
-The source code of the Java Swing client is on the `master` branch. Once downloaded execute from within the project folder the following
+Its source code is on the `master` branch. Once downloaded execute from within the project folder the following
 commands:
 
 ```
@@ -46,8 +44,9 @@ commands:
 	mvn exec:java
 
 ```
+
 That will launch the Swing application which is fairly intuitive to use, and which follows the same paradigm used with the android
-application (described in the previous section).
+application described in the previous section.
 
 ## Framework Usage & Design
 
