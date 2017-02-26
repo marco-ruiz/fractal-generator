@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.bop</groupId>
 	<artifactId>fractal-generator</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0</version>
 
 	<build>
 		<plugins>
@@ -15,6 +15,23 @@
 					<target>1.8</target>
 				</configuration>
 			</plugin>
+
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<version>1.2.1</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>java</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<mainClass>org.bop.fractals.line.swing.FractalApp</mainClass>
+				</configuration>
+			</plugin>
+
 		</plugins>
 	</build>
 </project>
