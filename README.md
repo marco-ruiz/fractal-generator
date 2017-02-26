@@ -11,6 +11,7 @@ This project consists of:
 ## Getting Started
 
 The project contains the source code of two applications in different branches.
+
 1. An Android application in the `android` branch.
 2. A Java Swing application in the `master` branch.
 
