@@ -4,25 +4,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bop.fractalAndroid.R;
-import org.bop.fractals.GeometricPatternFractalGenerator;
 import org.bop.fractals.line.FractalLine;
 
 import android.app.Activity;
+import android.app.DialogFragment;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Window;
 import android.view.WindowManager;
 
-public class EditFractalPattern extends Activity {
+public class EditPatternActivity extends Activity {
 
-	private static final String TAG = "EditFractalPattern";
+	private static final String TAG = EditPatternActivity.class.getName();
 
 	private LinesEditorView patternView;
 	private LinesDrawerView fractalView;
-	private GeometricPatternFractalGenerator<FractalLine> generator;
-	private int recursions = 3;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -41,11 +38,6 @@ public class EditFractalPattern extends Activity {
         switchToView(patternView);
 	}
 
-	private void switchToView(LinesDrawerView view) {
-		setContentView(view);
-		view.requestFocus();
-	}
-
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -56,41 +48,41 @@ public class EditFractalPattern extends Activity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-			case R.id.rec3:
-			case R.id.rec4:
-			case R.id.rec5:
-			case R.id.rec6:
-				recursions = Integer.parseInt((String) item.getTitle());
-				return true;
+			case R.id.color : 	return showDialog(new ColorPickerDialogFragment());
 
-			case R.id.clear :
-				patternView.clearLines();
+			case R.id.clear : 	patternView.clearLines();
+			case R.id.edit : 	switchToView(patternView);
+								return true;
 
-			case R.id.edit :
-				switchToView(patternView);
-				return true;
+			case R.id.generate : 	return showDialog(new GeneratorDialogFragment());
 
-			case R.id.generate :
-				generateFractal();
-
-			case R.id.fractal :
-				switchToView(fractalView);
-				return true;
+			case R.id.fractal : 	switchToView(fractalView);
+									return true;
 		}
 
 		return super.onOptionsItemSelected(item);
 	}
 
-	private void generateFractal() {
-		Log.d(TAG, "Generating fractal...");
-		List<FractalLine> auxLineList = new ArrayList<FractalLine>(patternView.getLines());
-		FractalLine base = auxLineList.remove(0);
-		generator = new GeometricPatternFractalGenerator<FractalLine>(base, auxLineList, recursions, false, null);
-		generator.generateFractalSync();
-		auxLineList.add(base);
-		auxLineList.addAll(generator.getFractal());
-		fractalView.setLines(auxLineList);
-		Log.d(TAG, "!!! Generated " + generator.getFractal().size() + " lines!");
+	private boolean showDialog(DialogFragment dialogFrag) {
+		dialogFrag.show(getFragmentManager(), dialogFrag.getClass().getName());
+		return true;
 	}
 
+	private void switchToView(LinesDrawerView view) {
+		setContentView(view);
+		view.requestFocus();
+	}
+
+	public void setCurrentColor(int color) {
+		patternView.setCurrentColor(color);
+	}
+
+	public ArrayList<FractalLine> getFractalPattern() {
+		return new ArrayList<FractalLine>(patternView.getLines());
+	}
+
+	public void setFractalLines(List<FractalLine> lines) {
+		fractalView.setLines(lines);
+		switchToView(fractalView);
+	}
 }

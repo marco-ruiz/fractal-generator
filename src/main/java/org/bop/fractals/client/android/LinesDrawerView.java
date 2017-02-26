@@ -25,7 +25,6 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.util.Log;
 import android.view.View;
 
 /**
@@ -34,7 +33,7 @@ import android.view.View;
  */
 public class LinesDrawerView extends View {
 
-	private static final String TAG = "LinesDrawerView";
+	private static final String TAG = LinesDrawerView.class.getName();
 
 	protected Paint paint = new Paint();
 	protected List<FractalLine> lines = new ArrayList<FractalLine>();
@@ -63,21 +62,18 @@ public class LinesDrawerView extends View {
 
 	@Override
 	public void onDraw(Canvas canvas) {
-		paint.setColor(Color.WHITE);
-
 /*
-		Log.d(TAG, "Drawing " + lines.size() + " lines!");
-		float[] array = getLinesAsFloatArray();
-		canvas.drawLines(array, paint);
+		paint.setColor(Color.WHITE);
+		canvas.drawLines(getLinesAsFloatArray(), paint);
 */
 
 		for (FractalLine line : lines) {
-			Log.d(TAG, "Drawing line: (" + line.Ax + "," + line.Ay + ") <-> ("+ line.Bx + + line.By + ")");
+			paint.setColor(line.rgbColorValue);
 			canvas.drawLine(line.Ax, line.Ay, line.Bx, line.By, paint);
 		}
 	}
 
-	public float[] getLinesAsFloatArray() {
+	private float[] getLinesAsFloatArray() {
 		int baseIndex = 0;
 		FractalLine line;
 		float[] result = new float[lines.size() * 4];

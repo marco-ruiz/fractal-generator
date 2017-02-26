@@ -20,6 +20,7 @@ import org.bop.fractals.line.FractalLine;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.PointF;
 import android.view.MotionEvent;
 import android.view.View;
@@ -31,9 +32,10 @@ import android.view.View.OnTouchListener;
  */
 public class LinesEditorView extends LinesDrawerView implements OnTouchListener {
 
-	private static final String TAG = "LinesEditorView";
+	private static final String TAG = LinesEditorView.class.getName();
 
 	private PointF editA, editB;
+	private int currColor = Color.WHITE;
 
 	public LinesEditorView(Context context) {
 		super(context);
@@ -44,6 +46,10 @@ public class LinesEditorView extends LinesDrawerView implements OnTouchListener 
 	public void restartEdit() {
 		editA = null;
 		editB = null;
+	}
+
+	public void setCurrentColor(int color) {
+		currColor = color;
 	}
 
 	@Override
@@ -67,7 +73,7 @@ public class LinesEditorView extends LinesDrawerView implements OnTouchListener 
 			}
 			if (action == MotionEvent.ACTION_UP) {
 				editB = new PointF(event.getX(), event.getY());
-				lines.add(new FractalLine(editA.x, editA.y, editB.x, editB.y));
+				lines.add(new FractalLine(editA.x, editA.y, editB.x, editB.y, currColor));
 				restartEdit();
 				invalidate();
 				return true;
@@ -81,8 +87,10 @@ public class LinesEditorView extends LinesDrawerView implements OnTouchListener 
 	public void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
 
-		if (editA != null)
+		if (editA != null) {
+			paint.setColor(currColor);
 			canvas.drawLine(editA.x, editA.y, editB.x, editB.y, paint);
+		}
 	}
 }
 

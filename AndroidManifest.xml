@@ -3,18 +3,18 @@
     package="org.bop.fractalAndroid"
     android:versionCode="1"
     android:versionName="1.0" >
-<!--
+
     <uses-sdk
         android:minSdkVersion="16"
-        android:targetSdkVersion="21" />
- -->
+        android:targetSdkVersion="18" />
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="org.bop.fractals.client.android.EditFractalPattern"
+            android:name="org.bop.fractals.client.android.EditPatternActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

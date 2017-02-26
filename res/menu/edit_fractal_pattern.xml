@@ -2,22 +2,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="org.bop.fractals.android.EditFractalPattern" >
 
+    <item android:id="@+id/color" android:title="Change Color..."/>
     <item android:id="@+id/edit" android:title="Edit Pattern"/>
     <item android:id="@+id/clear" android:title="Clear Pattern"/>
-    <item android:id="@+id/generate" android:title="Generate Fractal"/>
-    <item android:id="@+id/fractal" android:title="View Fractal"/>
-    <item android:id="@+id/color" android:title="Color..."/>
-    <item android:id="@+id/recursions" android:title="Recursions...">
-        <menu>
-            <group android:id="@+id/numbers" android:checkableBehavior="single">
-	            <item android:id="@+id/rec3" android:title="3" android:numericShortcut="3"/>
-	            <item android:id="@+id/rec4" android:title="4"/>
-	            <item android:id="@+id/rec5" android:title="5"/>
-	            <item android:id="@+id/rec6" android:title="6"/>
-	            <item android:id="@+id/rec7" android:title="7"/>
-	            <item android:id="@+id/rec8" android:title="8"/>
-            </group>
-        </menu>
-    </item>
+    <item android:id="@+id/generate" android:title="Generate New Fractal"/>
+    <item android:id="@+id/fractal" android:title="View Last Fractal"/>
 
 </menu>
