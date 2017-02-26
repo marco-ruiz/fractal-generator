@@ -34,7 +34,7 @@ to crash if the fractal is too big.
 
 ### Swing application
 
-![](README/fractal.png)
+![](README/fractal-swing.gif)
 
 The source code of the Java Swing client is on the `master` branch. Once downloaded execute from within the project folder the following
 commands:
