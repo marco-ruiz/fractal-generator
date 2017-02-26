@@ -38,15 +38,25 @@ public class GeometricPatternFractalGenerator<SHAPE_T extends Shape<SHAPE_T>> ex
 	private ThresholdProgressUpdater syncProgressUpdater;
 	private Map<Integer, List<SHAPE_T>> shapesByRecursionLevel = new HashMap<Integer, List<SHAPE_T>>();
 
+	public GeometricPatternFractalGenerator(List<SHAPE_T> pattern, int numIter, boolean lastIterOnly, IProgressListener progressWriter) {
+		patterns = new ArrayList<SHAPE_T>(pattern);
+		base = patterns.remove(0);
+		init(numIter, lastIterOnly, progressWriter);
+	}
+
 	public GeometricPatternFractalGenerator(SHAPE_T base, List<SHAPE_T> patterns, int numIter, boolean lastIterOnly, IProgressListener progressWriter) {
 		setBase(base);
 		setPatterns(patterns);
+		init(numIter, lastIterOnly, progressWriter);
+	}
+
+	private void init(int numIter, boolean lastIterOnly, IProgressListener progressWriter) {
 		setNumRecursions(numIter);
 		setLastIterOnly(lastIterOnly);
 		this.syncProgressUpdater = new ThresholdProgressUpdater(progressWriter, calculateNumGeometriesToCompute(), 2);
-
-		for (SHAPE_T shape : patterns) shape.computeConstants(base);
 		setProgressUpdater(syncProgressUpdater);
+
+		for (SHAPE_T shape : patterns) shape.computeConstants(this.base);
 	}
 
 	public SHAPE_T getBase() {
