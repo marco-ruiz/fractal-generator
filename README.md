@@ -15,28 +15,31 @@ The project contains the source code of two applications in different branches.
 1. An Android application in the `android` branch.
 2. A Java Swing application in the `master` branch.
 
-### Android Application
+Both applications operate in the following way. The idea is to define a set of lines that will form a geometric pattern for the application to eventually apply self-similarity to the rest of them in order to generate the fractal.
 
-![](README/fractal-android.gif)
-
-Its source code is on the `android` branch. Download or clone it and from within the project folder execute the command `mvn compile`. This will create in the `target` folder the **APK** file that you need to upload to your android device. This file has the form `fractals-*.apk`. Once uploaded, proceed to install it and thereafter you can start using the application.
-
-The objective is to define lines that will form a pattern of lines for the application to recursively apply
-self-similarity to the rest of them. Draw lines on your screen (patterns) until you choose to generate the fractal
-with the `Generate Fractal` option available in the application menu. Once selected the application will ask you how many recursions
-you want to apply to the pattern and that's it! Also the application menu has the option `Change Color` to give you
-a selection of colors to switch to in order to create more interesting patterns and fractals.
+1. Draw these pattern `lines` on your screen (patterns) through mouse clicks and/or gestures. 
+2. There is an option to change `color` to define the color attribute of each of the pattern lines through their definition process.
+3. Once you are satisfied with your pattern choose the option to `generate` the fractal (menu options or visible buttons) answering how many `recursions` you want to apply to the pattern and that's it! 
 
 As a warning, it is better not to define too many lines in the pattern (5 should be fine), nor higher recursion levels
 (no more than 7 for a 5 line pattern); as the recursion is memory and processing intensive and the application is prone
 to crash if the fractal is too big.
 
+### Android Application
+
+![](README/fractal-android.gif)
+
+1. Download or clone the source code from the `android` branch.
+2. From within the project folder execute the command `mvn compile`. 
+3. This will create in the `target` folder the **APK** file that you need to upload to your android device. This file has the form `fractals-*.apk`. 
+4. Once uploaded, proceed to install it and thereafter you can start using the application.
+
 ### Swing application
 
 ![](README/fractal-swing.gif)
 
-Its source code is on the `master` branch. Once downloaded execute from within the project folder the following
-commands:
+1. Download or clone the source code from the `master` branch.
+2. Execute from within the project folder downloaded the following maven commands:
 
 ```
 
