@@ -105,7 +105,7 @@ public class GeometricPatternFractalGenerator<SHAPE_T extends Shape<SHAPE_T>> ex
 	private void computeRecursionLevel(int recursionLevel) {
 		List<SHAPE_T> prevRecShapes = shapesByRecursionLevel.get(recursionLevel - 1);
 		List<SHAPE_T> currRecShapes = new ArrayList<SHAPE_T>();
-		for (SHAPE_T shape : prevRecShapes) currRecShapes.addAll(computeEquivalencesOf(prevRecShapes, shape));
+		for (SHAPE_T shape : patterns) currRecShapes.addAll(computeEquivalencesOf(prevRecShapes, shape));
 
 		shapesByRecursionLevel.put(recursionLevel, currRecShapes);
 	}
