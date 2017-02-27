@@ -92,6 +92,37 @@ public class FractalLine implements Shape<FractalLine> {
 
 		return new FractalLine(compAx, compAy, compBx, compBy, patternLine.rgbColorValue);
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + Float.floatToIntBits(Ax);
+		result = prime * result + Float.floatToIntBits(Ay);
+		result = prime * result + Float.floatToIntBits(Bx);
+		result = prime * result + Float.floatToIntBits(By);
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		FractalLine other = (FractalLine) obj;
+		if (Float.floatToIntBits(Ax) != Float.floatToIntBits(other.Ax))
+			return false;
+		if (Float.floatToIntBits(Ay) != Float.floatToIntBits(other.Ay))
+			return false;
+		if (Float.floatToIntBits(Bx) != Float.floatToIntBits(other.Bx))
+			return false;
+		if (Float.floatToIntBits(By) != Float.floatToIntBits(other.By))
+			return false;
+		return true;
+	}
 }
 
 class PatternConstants {
