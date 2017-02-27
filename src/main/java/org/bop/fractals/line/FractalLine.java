@@ -23,12 +23,6 @@ import org.bop.fractals.Shape;
  * @since Feb 21, 2017
  */
 public class FractalLine implements Shape<FractalLine> {
-	private static final int POINT_START = 0;
-	private static final int POINT_END = 1;
-
-	private static boolean isStart(int pointType) {
-		return pointType == FractalLine.POINT_START;
-	}
 
 	public final float Ax;
 	public final float Ay;
@@ -37,7 +31,9 @@ public class FractalLine implements Shape<FractalLine> {
 
 	public final int rgbColorValue;
 
-	private float k1, k2, k3, k4;
+	// Only pattern lines need PatternConstants. By default they are null.
+	private PatternConstants kA = null;
+	private PatternConstants kB = null;
 
 	public FractalLine(float Ax, float Ay, float Bx, float By) {
 		this(Ax, Ay, Bx, By, 0);
@@ -52,22 +48,21 @@ public class FractalLine implements Shape<FractalLine> {
 	}
 
 	public void computeConstants(FractalLine baseLine) {
-		computeConstants(baseLine, FractalLine.POINT_START);
-		computeConstants(baseLine, FractalLine.POINT_END);
+		kA = computeConstantsForPoint(baseLine, Ax, Ay);
+		kB = computeConstantsForPoint(baseLine, Bx, By);
 	}
 
-	private void computeConstants(FractalLine base, int pointType) {
+	private PatternConstants computeConstantsForPoint(FractalLine base, float x, float y) {
 		float m1, m2;
 		float dx, dy, dax, day;
 		float D;
-		float c1, c2;
-
+		float Cx, Cy;
 
 		dx = base.Bx - base.Ax;
 		dy = base.By - base.Ay;
 
-		dax = (isStart(pointType) ? Ax : Bx) - base.Ax;
-		day = (isStart(pointType) ? Ay : By) - base.Ay;
+		dax = x - base.Ax;
+		day = y - base.Ay;
 
 		D = dx * dx + dy * dy;
 		if ((D == 0) || (dx * dax + dy * day == 0) || (dx * dax + dy * day - D == 0)) {
@@ -77,28 +72,35 @@ public class FractalLine implements Shape<FractalLine> {
 		m2 = ((dx * day - dy * dax) / (dx * dax + dy * day - D));
 
 		// Constants
-		c1 = m2 / (m2 - m1);
-		c2 = m1 * c1;
+		Cx = m2 / (m2 - m1);
+		Cy = m1 * Cx;
 
-		// Setting the appropiates constants
-		if (isStart(pointType)) {
-			k1 = c1;
-			k2 = c2;
-		} else {
-			k3 = c1;
-			k4 = c2;
-		}
+		return new PatternConstants(Cx, Cy);
 	}
 
-	public FractalLine computeGeometryEquivalentTo(FractalLine relativeBase) {
+	public FractalLine computeGeometryEquivalentTo(FractalLine patternLine) {
+		PatternConstants constantsA = patternLine.kA;
+		PatternConstants constantsB = patternLine.kB;
+
 		float xDiff = Bx - Ax;
 		float yDiff = By - Ay;
-		float compAx = Ax + relativeBase.k1 * xDiff - relativeBase.k2 * yDiff;
-		float compAy = Ay + relativeBase.k1 * yDiff + relativeBase.k2 * xDiff;
-		float compBx = Ax + relativeBase.k3 * xDiff - relativeBase.k4 * yDiff;
-		float compBy = Ay + relativeBase.k3 * yDiff + relativeBase.k4 * xDiff;
 
-		return new FractalLine(compAx, compAy, compBx, compBy, relativeBase.rgbColorValue);
+		float compAx = Ax + constantsA.x * xDiff - constantsA.y * yDiff;
+		float compAy = Ay + constantsA.x * yDiff + constantsA.y * xDiff;
+		float compBx = Ax + constantsB.x * xDiff - constantsB.y * yDiff;
+		float compBy = Ay + constantsB.x * yDiff + constantsB.y * xDiff;
+
+		return new FractalLine(compAx, compAy, compBx, compBy, patternLine.rgbColorValue);
 	}
 }
+
+class PatternConstants {
+	public final float x, y;
+
+	public PatternConstants(float x, float y) {
+		this.x = x;
+		this.y = y;
+	}
+}
+
 
