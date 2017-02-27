@@ -22,8 +22,6 @@ import java.util.List;
 import org.bop.fractals.GeometricPatternFractalGenerator;
 import org.bop.fractals.line.FractalLine;
 
-import android.util.Log;
-
 /**
  * @author Marco Ruiz
  * @since Feb 25, 2017
@@ -38,13 +36,11 @@ public class GeneratorDialogFragment extends ValuePickerDialogFragment<Integer> 
 
 	public void onValueSelected(int index, Integer recursions) {
 		EditPatternActivity activity = (EditPatternActivity) getActivity();
-		Log.d(TAG, "Generating fractal...");
 		List<FractalLine> pattern = new ArrayList<FractalLine>(activity.getFractalPattern());
 		GeometricPatternFractalGenerator<FractalLine> generator =
 				new GeometricPatternFractalGenerator<FractalLine>(pattern, recursions, false, null);
 		generator.generateFractalSync();
 		pattern.addAll(generator.getFractal());
 		activity.setFractalLines(pattern);
-		Log.d(TAG, "!!! Generated " + generator.getFractal().size() + " lines!");
 	}
 }

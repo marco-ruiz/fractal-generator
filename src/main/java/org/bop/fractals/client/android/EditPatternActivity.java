@@ -3,7 +3,6 @@ package org.bop.fractals.client.android;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bop.fractalAndroid.R;
 import org.bop.fractals.line.FractalLine;
 
 import android.app.Activity;
